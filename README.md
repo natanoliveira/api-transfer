@@ -5,6 +5,7 @@ Backend basico para uma plataforma de transferencias entre usuarios comuns e loj
 ## O que este projeto oferece
 
 - API REST com NestJS
+- Documentacao Swagger em `/docs`
 - Validacoes de payload com class-validator
 - Regras de negocio para transferencia
 - Integracao com autorizador externo (mock)
