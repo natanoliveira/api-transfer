@@ -51,3 +51,12 @@ model Transfer {
   payee     User           @relation("TransferPayee", fields: [payeeId], references: [id])
   createdAt DateTime       @default(now())
 }
+
+model TransferAudit {
+  id         Int      @id @default(autoincrement())
+  transferId Int
+  eventType  String
+  payload    Json
+  transfer   Transfer @relation(fields: [transferId], references: [id])
+  createdAt  DateTime @default(now())
+}

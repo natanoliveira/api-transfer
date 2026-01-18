@@ -5,22 +5,22 @@ import { UserType } from '../enums/user-type.enum';
 export class TransferPolicy {
   static validatePayload(value: number, payerId: number, payeeId: number) {
     if (value <= 0) {
-      throw new DomainError('Transfer value must be greater than zero.');
+      throw new DomainError('O valor da transferencia deve ser maior que zero.');
     }
     if (payerId === payeeId) {
-      throw new DomainError('Payer and payee must be different.');
+      throw new DomainError('Pagador e recebedor devem ser diferentes.');
     }
   }
 
   static ensurePayerIsCommon(payer: User) {
     if (payer.type === UserType.MERCHANT) {
-      throw new DomainError('Merchant users cannot send transfers.');
+      throw new DomainError('Usuarios lojistas nao podem enviar transferencias.');
     }
   }
 
   static ensureSufficientBalance(balance: number, value: number) {
     if (balance < value) {
-      throw new DomainError('Insufficient balance.');
+      throw new DomainError('Saldo insuficiente.');
     }
   }
 }

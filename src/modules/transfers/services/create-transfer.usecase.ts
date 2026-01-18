@@ -7,6 +7,7 @@ import { UserRepository } from '../../users/repositories/user.repository.interfa
 import { AuthorizerService } from '../../authz/services/authorizer.service';
 import { NotificationService } from '../../notifications/services/notification.service';
 import { CreateTransferDto } from '../dto/create-transfer.dto';
+import { CacheService } from '../../../infra/cache/cache.service';
 import { TransactionManager } from './transaction-manager.interface';
 
 @Injectable()
@@ -16,6 +17,7 @@ export class CreateTransferUseCase {
     @Inject('AuthorizerService') private readonly authorizerService: AuthorizerService,
     @Inject('NotificationService') private readonly notificationService: NotificationService,
     @Inject('TransactionManager') private readonly transactionManager: TransactionManager,
+    @Inject('CacheService') private readonly cacheService: CacheService,
   ) {}
 
   async execute(dto: CreateTransferDto): Promise<Transfer> {
@@ -23,18 +25,18 @@ export class CreateTransferUseCase {
 
     const payer = await this.userRepository.findById(dto.payer);
     if (!payer) {
-      throw new DomainError('Payer not found.');
+      throw new DomainError('Pagador nao encontrado.', 404);
     }
     const payee = await this.userRepository.findById(dto.payee);
     if (!payee) {
-      throw new DomainError('Payee not found.');
+      throw new DomainError('Recebedor nao encontrado.', 404);
     }
 
     TransferPolicy.ensurePayerIsCommon(payer);
 
     const authorized = await this.authorizerService.authorize(payer.id, payee.id, dto.value);
     if (!authorized) {
-      throw new DomainError('Transfer not authorized.');
+      throw new DomainError('Transferencia nao autorizada.', 403);
     }
 
     const transfer = await this.transactionManager.runInTransaction(async ({ walletRepository, transferRepository }) => {
@@ -44,7 +46,7 @@ export class CreateTransferUseCase {
       const payeeWallet = await walletRepository.findByUserId(payee.id);
 
       if (!payerWallet || !payeeWallet) {
-        throw new DomainError('Wallet not found.');
+        throw new DomainError('Carteira nao encontrada.', 404);
       }
 
       TransferPolicy.ensureSufficientBalance(payerWallet.balance, dto.value);
@@ -60,6 +62,8 @@ export class CreateTransferUseCase {
     });
 
     this.notificationService.notifyTransfer(transfer).catch(() => undefined);
+    await this.cacheService.del(`wallet:balance:${payer.id}`);
+    await this.cacheService.del(`wallet:balance:${payee.id}`);
 
     return transfer;
   }

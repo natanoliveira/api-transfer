@@ -3,15 +3,15 @@ import { IsNumber, IsPositive } from 'class-validator';
 
 export class CreateTransferDto {
   @ApiProperty({ example: 100.5 })
-  @IsNumber()
-  @IsPositive()
+  @IsNumber({}, { message: 'Valor deve ser numero.' })
+  @IsPositive({ message: 'Valor deve ser maior que zero.' })
   value!: number;
 
   @ApiProperty({ example: 1 })
-  @IsNumber()
+  @IsNumber({}, { message: 'Pagador deve ser numero.' })
   payer!: number;
 
   @ApiProperty({ example: 2 })
-  @IsNumber()
+  @IsNumber({}, { message: 'Recebedor deve ser numero.' })
   payee!: number;
 }

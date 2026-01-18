@@ -14,10 +14,10 @@ export class CreateUserUseCase {
 
   async execute(dto: CreateUserDto): Promise<User> {
     if (await this.userRepository.existsByCpf(dto.cpf)) {
-      throw new DomainError('CPF already registered.');
+      throw new DomainError('CPF ja cadastrado.');
     }
     if (await this.userRepository.existsByEmail(dto.email)) {
-      throw new DomainError('Email already registered.');
+      throw new DomainError('Email ja cadastrado.');
     }
 
     const passwordHash = `hashed:${dto.password}`;

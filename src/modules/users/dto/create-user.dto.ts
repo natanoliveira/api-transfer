@@ -4,25 +4,25 @@ import { UserType } from '../../../domain/enums/user-type.enum';
 
 export class CreateUserDto {
   @ApiProperty({ example: 'Maria Silva' })
-  @IsString()
-  @IsNotEmpty()
+  @IsString({ message: 'Nome completo deve ser texto.' })
+  @IsNotEmpty({ message: 'Nome completo e obrigatorio.' })
   fullName!: string;
 
   @ApiProperty({ example: '12345678901' })
-  @IsString()
-  @IsNotEmpty()
+  @IsString({ message: 'CPF deve ser texto.' })
+  @IsNotEmpty({ message: 'CPF e obrigatorio.' })
   cpf!: string;
 
   @ApiProperty({ example: 'maria@exemplo.com' })
-  @IsEmail()
+  @IsEmail({}, { message: 'Email invalido.' })
   email!: string;
 
   @ApiProperty({ example: 'senha-forte-123' })
-  @IsString()
-  @MinLength(8)
+  @IsString({ message: 'Senha deve ser texto.' })
+  @MinLength(8, { message: 'Senha deve ter no minimo 8 caracteres.' })
   password!: string;
 
   @ApiProperty({ enum: UserType, example: UserType.COMMON })
-  @IsEnum(UserType)
+  @IsEnum(UserType, { message: 'Tipo de usuario invalido.' })
   type!: UserType;
 }

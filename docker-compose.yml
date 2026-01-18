@@ -12,6 +12,15 @@ services:
       - "${POSTGRES_PORT}:5432"
     volumes:
       - api-transfer-postgres-data:/var/lib/postgresql/data
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: api-transfer-rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
+    ports:
+      - "5672:5672"
+      - "15672:15672"
 
 volumes:
   api-transfer-postgres-data:
