@@ -42,15 +42,15 @@ model Wallet {
 }
 
 model Transfer {
-  id        String         @id @default(uuid())
+  id        String          @id @default(uuid())
   payerId   String
   payeeId   String
   value     Decimal
   status    TransferStatus
-  payer     User           @relation("TransferPayer", fields: [payerId], references: [id])
-  payee     User           @relation("TransferPayee", fields: [payeeId], references: [id])
+  payer     User            @relation("TransferPayer", fields: [payerId], references: [id])
+  payee     User            @relation("TransferPayee", fields: [payeeId], references: [id])
   audits    TransferAudit[]
-  createdAt DateTime       @default(now())
+  createdAt DateTime        @default(now())
 }
 
 model TransferAudit {

@@ -1,18 +1,19 @@
 # API de Transferência
 
 ## Visao geral
-Este projeto implementa uma API REST para transferências entre usuarios comuns e lojistas, utilizando NestJS e Prisma. A solucao organiza domínio, casos de uso e infraestrutura em modulos, com separacao clara de responsabilidades.
+Este projeto implementa uma API REST para transferências entre usuários comuns e lojistas, utilizando NestJS e Prisma. A solucao organiza domínio, casos de uso e infraestrutura em modulos, com separacao clara de responsabilidades.
 
 ## Funcionalidades
-- Criacao de usuarios com validacao de dados.
-- Consulta de saldo por usuario.
-- Criacao de transferências com regras de negócio (saldo, perfil e autorização).
+- Criacao de usuários com validacao de dados.
+- Consulta de saldo por usuário.
+- Listagem paginada de usuários, carteiras e transferências.
+- Criacao de transferências com regras de negocio (saldo, perfil e autorizacao).
 - Notificação pos-transferência via mensageria (RabbitMQ), com auditoria persistida.
-- Cache de saldo com TTL configuravel.
+- Cache de saldo com TTL configurável.
 - Documentacao Swagger em `/docs`.
 
 ## Arquitetura
-- Dominio: entidades, enums, políticas e erros em `src/domain`.
+- Domínio: entidades, enums, políticas e erros em `src/domain`.
 - Aplicação: casos de uso em `src/modules/**/services`.
 - Infraestrutura: repositorios Prisma, cache, mensageria e tratamento HTTP em `src/infra` e `src/modules/**/infra`.
 - Entrega: controllers REST em `src/modules/**/controllers`.
@@ -28,7 +29,7 @@ Copie `.env.example` para `.env` e ajuste os valores.
 Variaveis principais:
 - `PORT`: porta HTTP da aplicação.
 - `APP_TOKEN`: token de aplicação para acesso via header `x-app-token`.
-- `POSTGRES_USER`: usuario do PostgreSQL.
+- `POSTGRES_USER`: usuário do PostgreSQL.
 - `POSTGRES_PASSWORD`: senha do PostgreSQL.
 - `POSTGRES_DB`: nome do banco.
 - `POSTGRES_PORT`: porta do PostgreSQL.
@@ -38,6 +39,20 @@ Variaveis principais:
 - `RABBITMQ_ENABLED`: `true` para habilitar mensageria.
 - `RABBITMQ_URL`: URL do RabbitMQ.
 - `RABBITMQ_DEFAULT_USER` e `RABBITMQ_DEFAULT_PASS`: credenciais do RabbitMQ (docker).
+
+## Autenticacao por token de aplicacao
+Todas as rotas exigem o header `x-app-token` com o valor de `APP_TOKEN`.
+
+## IDs
+As chaves primarias sao UUID por padrao.
+
+## Endpoints principais
+- `POST /users`
+- `GET /users?page=1&limit=10`
+- `GET /wallets/:userId/balance`
+- `GET /wallets?page=1&limit=10`
+- `POST /transfer`
+- `GET /transfer?page=1&limit=10`
 
 Exemplo de `.env` atual:
 ```
@@ -97,7 +112,7 @@ Execução dos testes:
 npm test
 ```
 
-Ha testes E2E com NestJS + Supertest para rotas de usuarios, carteiras e transferências.
+Ha testes E2E com NestJS + Supertest para rotas de usuários, carteiras e transferências.
 
 ## Cache
 O cache de saldo usa `cache-manager` em memoria. A invalidação ocorre apos transferências para pagador e recebedor. O TTL e configurado por `CACHE_TTL_SECONDS`.
