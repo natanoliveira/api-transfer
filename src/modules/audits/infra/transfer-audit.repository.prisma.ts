@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import { PrismaService } from '../../../infra/database/prisma/prisma.service';
 import { TransferAuditRepository } from '../repositories/transfer-audit.repository.interface';
 
@@ -11,7 +12,7 @@ export class PrismaTransferAuditRepository implements TransferAuditRepository {
       data: {
         transferId: entry.transferId,
         eventType: entry.eventType,
-        payload: entry.payload,
+        payload: entry.payload as Prisma.InputJsonValue,
       },
     });
   }

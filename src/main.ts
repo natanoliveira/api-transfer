@@ -1,4 +1,5 @@
-import 'dotenv/config';
+import * as dotenv from 'dotenv';
+dotenv.config();
 import { Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
@@ -23,17 +24,21 @@ async function bootstrap() {
     next();
   });
 
+  const appName = process.env.APP_NAME;
+
   const config = new DocumentBuilder()
-    .setTitle('API de Transferencia')
-    .setDescription('Documentacao da API de transferencias.')
+    .setTitle(`${appName}`)
+    .setDescription('📜 Documentacao da API de transferencias.')
     .setVersion('1.0')
-    .setContact('Natan Oliveira', '', 'natanoliveirati@gmail.com')
+    .setContact('✉️ Natan Oliveira', '', 'natanoliveirati@gmail.com')
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('docs', app, document);
 
   const port = process.env.PORT ? Number(process.env.PORT) : 8090;
   await app.listen(port);
+
+  console.log(`🚀 Backend running on http://localhost:${port}`);
 }
 
 bootstrap();

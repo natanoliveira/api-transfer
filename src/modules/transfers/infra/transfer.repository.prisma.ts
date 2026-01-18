@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { Prisma, Transfer as PrismaTransfer } from '@prisma/client';
 import { Transfer } from '../../../domain/entities/transfer.entity';
 import { TransferStatus } from '../../../domain/enums/transfer-status.enum';
@@ -7,7 +7,7 @@ import { TransferRepository } from '../repositories/transfer.repository.interfac
 
 @Injectable()
 export class PrismaTransferRepository implements TransferRepository {
-  constructor(private readonly prisma: PrismaService | Prisma.TransactionClient) {}
+  constructor(@Inject(PrismaService) private readonly prisma: PrismaService | Prisma.TransactionClient) {}
 
   async create(transfer: Transfer): Promise<Transfer> {
     const created = await this.prisma.transfer.create({

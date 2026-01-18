@@ -13,7 +13,7 @@ export class InMemoryCacheService implements CacheService {
   }
 
   async set<T>(key: string, value: T, ttlSeconds?: number): Promise<void> {
-    await this.cache.set(key, value, ttlSeconds ? { ttl: ttlSeconds } : undefined);
+    await this.cache.set(key, value, ttlSeconds);
   }
 
   async del(key: string): Promise<void> {

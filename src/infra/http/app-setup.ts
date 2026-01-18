@@ -1,4 +1,5 @@
 import { INestApplication, ValidationPipe, BadRequestException } from '@nestjs/common';
+import { AppTokenInterceptor } from './app-token.interceptor';
 import { HttpExceptionFilter } from './http-exception.filter';
 
 export function configureApp(app: INestApplication) {
@@ -22,4 +23,5 @@ export function configureApp(app: INestApplication) {
   );
 
   app.useGlobalFilters(new HttpExceptionFilter());
+  app.useGlobalInterceptors(new AppTokenInterceptor());
 }

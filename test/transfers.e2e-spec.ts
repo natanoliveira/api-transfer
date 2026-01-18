@@ -1,4 +1,4 @@
-import request from 'supertest';
+import * as request from 'supertest';
 import { Wallet } from '../src/domain/entities/wallet.entity';
 import { createTestApp } from './test-setup';
 

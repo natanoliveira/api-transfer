@@ -49,6 +49,7 @@ model Transfer {
   status    TransferStatus
   payer     User           @relation("TransferPayer", fields: [payerId], references: [id])
   payee     User           @relation("TransferPayee", fields: [payeeId], references: [id])
+  audits    TransferAudit[]
   createdAt DateTime       @default(now())
 }
 

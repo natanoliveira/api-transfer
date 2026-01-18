@@ -1,4 +1,4 @@
-import request from 'supertest';
+import * as request from 'supertest';
 import { createTestApp } from './test-setup';
 
 describe('UsersController', () => {

@@ -1,7 +1,7 @@
 module.exports = {
   preset: 'ts-jest',
   testEnvironment: 'node',
-  testRegex: '.*\\.spec\\.ts$',
+  testMatch: ['**/?(*.)+(spec|e2e-spec).ts'],
   moduleFileExtensions: ['ts', 'js', 'json'],
   rootDir: '.',
 };

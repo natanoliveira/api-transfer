@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 import { UsersModule } from './modules/users/users.module';
 import { WalletsModule } from './modules/wallets/wallets.module';
 import { TransfersModule } from './modules/transfers/transfers.module';
@@ -9,6 +10,10 @@ import { MessagingModule } from './infra/messaging/messaging.module';
 import { AuditsModule } from './modules/audits/audits.module';
 
 @Module({
-  imports: [CacheModule, MessagingModule, AuditsModule, UsersModule, WalletsModule, TransfersModule, AuthzModule, NotificationsModule],
+  imports: [CacheModule, MessagingModule, AuditsModule, UsersModule, WalletsModule, TransfersModule, AuthzModule, NotificationsModule,
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
+  ],
 })
-export class AppModule {}
+export class AppModule { }

@@ -1,11 +1,11 @@
 import { Injectable, Logger, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
-import { Channel, Connection, ConsumeMessage, connect } from 'amqplib';
+import { Channel, ChannelModel, ConsumeMessage, connect } from 'amqplib';
 
 type MessageHandler = (payload: Record<string, unknown>) => Promise<void>;
 
 @Injectable()
 export class RabbitMqClient implements OnModuleInit, OnModuleDestroy {
-  private connection?: Connection;
+  private connection?: ChannelModel;
   private channel?: Channel;
   private readonly logger = new Logger(RabbitMqClient.name);
 
@@ -59,9 +59,11 @@ export class RabbitMqClient implements OnModuleInit, OnModuleDestroy {
       return this.channel;
     }
     const url = this.getUrl();
-    this.connection = await connect(url);
+    if (!this.connection) {
+      this.connection = await connect(url);
+    }
     this.channel = await this.connection.createChannel();
-    return this.channel;
+    return this.channel!;
   }
 
   private async handleMessage(msg: ConsumeMessage, handler: MessageHandler, channel: Channel) {
