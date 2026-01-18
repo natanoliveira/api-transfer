@@ -6,7 +6,7 @@ export class UserPresenter {
     return {
       id: user.id,
       fullName: user.fullName,
-      cpf: user.cpf,
+      document: user.document,
       email: user.email,
       type: user.type,
     };

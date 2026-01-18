@@ -9,12 +9,12 @@ export class CreateUserDto {
   fullName!: string;
 
   @ApiProperty({ example: '12345678901' })
-  @IsString({ message: 'CPF deve ser texto.' })
-  @IsNotEmpty({ message: 'CPF e obrigatorio.' })
-  cpf!: string;
+  @IsString({ message: 'Documento deve ser texto.' })
+  @IsNotEmpty({ message: 'Documento e obrigatorio.' })
+  document!: string;
 
   @ApiProperty({ example: 'maria@exemplo.com' })
-  @IsEmail({}, { message: 'Email invalido.' })
+  @IsEmail({}, { message: 'E-mail invalido.' })
   email!: string;
 
   @ApiProperty({ example: 'senha-forte-123' })

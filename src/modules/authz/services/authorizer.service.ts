@@ -1,3 +1,3 @@
 export interface AuthorizerService {
-  authorize(payerId: number, payeeId: number, value: number): Promise<boolean>;
+  authorize(payerId: string, payeeId: string, value: number): Promise<boolean>;
 }

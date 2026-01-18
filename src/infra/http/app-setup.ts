@@ -11,11 +11,11 @@ export function configureApp(app: INestApplication) {
         const messages = errors.flatMap((error) => {
           const constraints = error.constraints ?? {};
           return Object.entries(constraints).map(([key, value]) =>
-            key === 'whitelistValidation' ? `Propriedade ${error.property} nao permitida.` : value,
+            key === 'whitelistValidation' ? `Propriedade ${error.property} não permitida.` : value,
           );
         });
         return new BadRequestException({
-          message: 'Dados invalidos.',
+          message: 'Dados inválidos.',
           errors: messages,
         });
       },

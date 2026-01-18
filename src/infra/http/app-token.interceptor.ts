@@ -10,7 +10,7 @@ export class AppTokenInterceptor implements NestInterceptor {
     const token = Array.isArray(headerToken) ? headerToken[0] : headerToken;
 
     if (!expectedToken || token !== expectedToken) {
-      throw new UnauthorizedException('Não autorizado. Token de aplicacao invalido.');
+      throw new UnauthorizedException('Não autorizado. Token de aplicação invalido.');
     }
 
     return next.handle();

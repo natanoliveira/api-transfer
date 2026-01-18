@@ -8,7 +8,7 @@ describe('UsersController', () => {
       .post('/users')
       .send({
         fullName: 'Maria Silva',
-        cpf: '12345678901',
+        document: '52998224725',
         email: 'maria@exemplo.com',
         password: 'senha-forte-123',
         type: 'COMMON',
@@ -16,9 +16,9 @@ describe('UsersController', () => {
       .expect(201);
 
     expect(response.body).toMatchObject({
-      id: 1,
+      id: expect.any(String),
       fullName: 'Maria Silva',
-      cpf: '12345678901',
+      document: '52998224725',
       email: 'maria@exemplo.com',
       type: 'COMMON',
     });
@@ -26,20 +26,23 @@ describe('UsersController', () => {
     await app.close();
   });
 
-  it('rejeita CPF duplicado', async () => {
+  it('rejeita documento duplicado', async () => {
     const { app } = await createTestApp();
     const payload = {
       fullName: 'Maria Silva',
-      cpf: '12345678901',
+      document: '12345678901',
       email: 'maria@exemplo.com',
       password: 'senha-forte-123',
       type: 'COMMON',
     };
 
     await request(app.getHttpServer()).post('/users').send(payload).expect(201);
-    const response = await request(app.getHttpServer()).post('/users').send({ ...payload, email: 'outra@exemplo.com' }).expect(400);
+    const response = await request(app.getHttpServer())
+      .post('/users')
+      .send({ ...payload, email: 'outra@exemplo.com' })
+      .expect(400);
 
-    expect(response.body.message).toBe('CPF ja cadastrado.');
+    expect(response.body.message).toBe('Documento ja cadastrado.');
     await app.close();
   });
 });

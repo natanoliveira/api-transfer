@@ -9,7 +9,7 @@ describe('TransfersController', () => {
       .post('/users')
       .send({
         fullName: 'Ana Lima',
-        cpf: '11122233344',
+        document: '52998224725',
         email: 'ana@exemplo.com',
         password: 'senha-forte-123',
         type: 'COMMON',
@@ -19,7 +19,7 @@ describe('TransfersController', () => {
       .post('/users')
       .send({
         fullName: 'Loja XPTO',
-        cpf: '55566677788',
+        document: '11222333000181',
         email: 'loja@exemplo.com',
         password: 'senha-forte-123',
         type: 'MERCHANT',
@@ -53,7 +53,7 @@ describe('TransfersController', () => {
       .post('/users')
       .send({
         fullName: 'Carlos Souza',
-        cpf: '99988877766',
+        document: '39053344705',
         email: 'carlos@exemplo.com',
         password: 'senha-forte-123',
         type: 'COMMON',
@@ -63,7 +63,7 @@ describe('TransfersController', () => {
       .post('/users')
       .send({
         fullName: 'Paula Martins',
-        cpf: '22233344455',
+        document: '16899535009',
         email: 'paula@exemplo.com',
         password: 'senha-forte-123',
         type: 'COMMON',

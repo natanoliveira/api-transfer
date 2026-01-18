@@ -8,9 +8,9 @@ export class GetBalanceUseCase {
   constructor(
     @Inject('WalletRepository') private readonly walletRepository: WalletRepository,
     @Inject('CacheService') private readonly cacheService: CacheService,
-  ) {}
+  ) { }
 
-  async execute(userId: number): Promise<number> {
+  async execute(userId: string): Promise<number> {
     const cacheKey = `wallet:balance:${userId}`;
     const cached = await this.cacheService.get<number>(cacheKey);
     if (cached !== null) {
@@ -19,7 +19,7 @@ export class GetBalanceUseCase {
 
     const wallet = await this.walletRepository.findByUserId(userId);
     if (!wallet) {
-      throw new DomainError('Carteira nao encontrada.', 404);
+      throw new DomainError('Carteira não encontrada.', 404);
     }
     const ttlSeconds = Number(process.env.CACHE_TTL_SECONDS ?? 30);
     await this.cacheService.set(cacheKey, wallet.balance, Number.isNaN(ttlSeconds) ? 30 : ttlSeconds);

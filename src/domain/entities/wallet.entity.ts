@@ -1,3 +1,3 @@
 export class Wallet {
-  constructor(public readonly userId: number, public balance: number) {}
+  constructor(public readonly userId: string, public balance: number) {}
 }

@@ -8,7 +8,7 @@ export class TransferAuditService {
   ) {}
 
   async recordTransferEvent(payload: Record<string, unknown>) {
-    const transferId = Number(payload.transferId);
+    const transferId = typeof payload.transferId === 'string' ? payload.transferId : '';
     if (!transferId) {
       return;
     }

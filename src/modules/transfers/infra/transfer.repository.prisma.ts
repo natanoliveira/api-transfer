@@ -21,6 +21,14 @@ export class PrismaTransferRepository implements TransferRepository {
     return this.toDomain(created);
   }
 
+  async findManyPaged(params: { page: number; limit: number }): Promise<{ items: Transfer[]; total: number }> {
+    const skip = (params.page - 1) * params.limit;
+    const take = params.limit;
+    const items = await this.prisma.transfer.findMany({ skip, take, orderBy: { id: 'asc' } });
+    const total = await this.prisma.transfer.count();
+    return { items: items.map((transfer) => this.toDomain(transfer)), total };
+  }
+
   private toDomain(transfer: PrismaTransfer): Transfer {
     return new Transfer(
       transfer.id,

@@ -9,13 +9,13 @@ import { UserRepository } from '../repositories/user.repository.interface';
 export class PrismaUserRepository implements UserRepository {
   constructor(@Inject(PrismaService) private readonly prisma: PrismaService | Prisma.TransactionClient) {}
 
-  async findById(id: number): Promise<User | null> {
+  async findById(id: string): Promise<User | null> {
     const user = await this.prisma.user.findUnique({ where: { id } });
     return user ? this.toDomain(user) : null;
   }
 
-  async existsByCpf(cpf: string): Promise<boolean> {
-    const count = await this.prisma.user.count({ where: { cpf } });
+  async existsByDocument(document: string): Promise<boolean> {
+    const count = await this.prisma.user.count({ where: { document } });
     return count > 0;
   }
 
@@ -28,7 +28,7 @@ export class PrismaUserRepository implements UserRepository {
     const created = await this.prisma.user.create({
       data: {
         fullName: user.fullName,
-        cpf: user.cpf,
+        document: user.document,
         email: user.email,
         passwordHash: user.passwordHash,
         type: user.type,
@@ -37,7 +37,15 @@ export class PrismaUserRepository implements UserRepository {
     return this.toDomain(created);
   }
 
+  async findManyPaged(params: { page: number; limit: number }): Promise<{ items: User[]; total: number }> {
+    const skip = (params.page - 1) * params.limit;
+    const take = params.limit;
+    const items = await this.prisma.user.findMany({ skip, take, orderBy: { id: 'asc' } });
+    const total = await this.prisma.user.count();
+    return { items: items.map((user) => this.toDomain(user)), total };
+  }
+
   private toDomain(user: PrismaUser): User {
-    return new User(user.id, user.fullName, user.cpf, user.email, user.passwordHash, user.type as UserType);
+    return new User(user.id, user.fullName, user.document, user.email, user.passwordHash, user.type as UserType);
   }
 }

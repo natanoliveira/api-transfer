@@ -6,6 +6,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { NextFunction, Request, Response } from 'express';
 import { AppModule } from './app.module';
 import { configureApp } from './infra/http/app-setup';
+import { sanitize } from './infra/utils/sanitize';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -17,9 +18,19 @@ async function bootstrap() {
     res.on('finish', () => {
       const durationMs = Date.now() - startTime;
       const timestamp = new Date().toISOString();
-      logger.log(
-        `${req.method} ${req.originalUrl} ${res.statusCode} - ${durationMs}ms - ${timestamp}`,
-      );
+      const requestId = (req.headers['x-request-id'] as string | undefined) ?? undefined;
+      const logPayload = {
+        method: req.method,
+        path: req.originalUrl,
+        statusCode: res.statusCode,
+        durationMs,
+        timestamp,
+        requestId,
+        params: sanitize(req.params),
+        query: sanitize(req.query),
+        body: sanitize(req.body),
+      };
+      logger.log(JSON.stringify(logPayload));
     });
     next();
   });

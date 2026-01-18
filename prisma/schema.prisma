@@ -19,9 +19,9 @@ enum TransferStatus {
 }
 
 model User {
-  id           Int        @id @default(autoincrement())
+  id           String     @id @default(uuid())
   fullName     String
-  cpf          String     @unique
+  document     String     @unique
   email        String     @unique
   passwordHash String
   type         UserType
@@ -33,8 +33,8 @@ model User {
 }
 
 model Wallet {
-  id        Int      @id @default(autoincrement())
-  userId    Int      @unique
+  id        String   @id @default(uuid())
+  userId    String   @unique
   balance   Decimal  @default(0)
   user      User     @relation(fields: [userId], references: [id])
   createdAt DateTime @default(now())
@@ -42,9 +42,9 @@ model Wallet {
 }
 
 model Transfer {
-  id        Int            @id @default(autoincrement())
-  payerId   Int
-  payeeId   Int
+  id        String         @id @default(uuid())
+  payerId   String
+  payeeId   String
   value     Decimal
   status    TransferStatus
   payer     User           @relation("TransferPayer", fields: [payerId], references: [id])
@@ -54,8 +54,8 @@ model Transfer {
 }
 
 model TransferAudit {
-  id         Int      @id @default(autoincrement())
-  transferId Int
+  id         String   @id @default(uuid())
+  transferId String
   eventType  String
   payload    Json
   transfer   Transfer @relation(fields: [transferId], references: [id])

@@ -4,11 +4,14 @@ CREATE TYPE "UserType" AS ENUM ('COMMON', 'MERCHANT');
 -- CreateEnum
 CREATE TYPE "TransferStatus" AS ENUM ('PENDING', 'COMPLETED', 'FAILED');
 
+-- Enable UUID generation
+CREATE EXTENSION IF NOT EXISTS "pgcrypto";
+
 -- CreateTable
 CREATE TABLE "User" (
-    "id" SERIAL NOT NULL,
+    "id" UUID NOT NULL DEFAULT gen_random_uuid(),
     "fullName" TEXT NOT NULL,
-    "cpf" TEXT NOT NULL,
+    "document" TEXT NOT NULL,
     "email" TEXT NOT NULL,
     "passwordHash" TEXT NOT NULL,
     "type" "UserType" NOT NULL,
@@ -20,8 +23,8 @@ CREATE TABLE "User" (
 
 -- CreateTable
 CREATE TABLE "Wallet" (
-    "id" SERIAL NOT NULL,
-    "userId" INTEGER NOT NULL,
+    "id" UUID NOT NULL DEFAULT gen_random_uuid(),
+    "userId" UUID NOT NULL,
     "balance" DECIMAL(65,30) NOT NULL DEFAULT 0,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
@@ -31,9 +34,9 @@ CREATE TABLE "Wallet" (
 
 -- CreateTable
 CREATE TABLE "Transfer" (
-    "id" SERIAL NOT NULL,
-    "payerId" INTEGER NOT NULL,
-    "payeeId" INTEGER NOT NULL,
+    "id" UUID NOT NULL DEFAULT gen_random_uuid(),
+    "payerId" UUID NOT NULL,
+    "payeeId" UUID NOT NULL,
     "value" DECIMAL(65,30) NOT NULL,
     "status" "TransferStatus" NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -41,8 +44,19 @@ CREATE TABLE "Transfer" (
     CONSTRAINT "Transfer_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateTable
+CREATE TABLE "TransferAudit" (
+    "id" UUID NOT NULL DEFAULT gen_random_uuid(),
+    "transferId" UUID NOT NULL,
+    "eventType" TEXT NOT NULL,
+    "payload" JSONB NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "TransferAudit_pkey" PRIMARY KEY ("id")
+);
+
 -- CreateIndex
-CREATE UNIQUE INDEX "User_cpf_key" ON "User"("cpf");
+CREATE UNIQUE INDEX "User_document_key" ON "User"("document");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
@@ -58,3 +72,6 @@ ALTER TABLE "Transfer" ADD CONSTRAINT "Transfer_payerId_fkey" FOREIGN KEY ("paye
 
 -- AddForeignKey
 ALTER TABLE "Transfer" ADD CONSTRAINT "Transfer_payeeId_fkey" FOREIGN KEY ("payeeId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "TransferAudit" ADD CONSTRAINT "TransferAudit_transferId_fkey" FOREIGN KEY ("transferId") REFERENCES "Transfer"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

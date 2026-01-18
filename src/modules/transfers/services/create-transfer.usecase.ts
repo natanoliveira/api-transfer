@@ -18,25 +18,25 @@ export class CreateTransferUseCase {
     @Inject('NotificationService') private readonly notificationService: NotificationService,
     @Inject('TransactionManager') private readonly transactionManager: TransactionManager,
     @Inject('CacheService') private readonly cacheService: CacheService,
-  ) {}
+  ) { }
 
   async execute(dto: CreateTransferDto): Promise<Transfer> {
     TransferPolicy.validatePayload(dto.value, dto.payer, dto.payee);
 
     const payer = await this.userRepository.findById(dto.payer);
     if (!payer) {
-      throw new DomainError('Pagador nao encontrado.', 404);
+      throw new DomainError('Pagador não encontrado.', 404);
     }
     const payee = await this.userRepository.findById(dto.payee);
     if (!payee) {
-      throw new DomainError('Recebedor nao encontrado.', 404);
+      throw new DomainError('Recebedor não encontrado.', 404);
     }
 
     TransferPolicy.ensurePayerIsCommon(payer);
 
     const authorized = await this.authorizerService.authorize(payer.id, payee.id, dto.value);
     if (!authorized) {
-      throw new DomainError('Transferencia nao autorizada.', 403);
+      throw new DomainError('Transferencia não autorizada.', 403);
     }
 
     const transfer = await this.transactionManager.runInTransaction(async ({ walletRepository, transferRepository }) => {
@@ -46,7 +46,7 @@ export class CreateTransferUseCase {
       const payeeWallet = await walletRepository.findByUserId(payee.id);
 
       if (!payerWallet || !payeeWallet) {
-        throw new DomainError('Carteira nao encontrada.', 404);
+        throw new DomainError('Carteira não encontrada.', 404);
       }
 
       TransferPolicy.ensureSufficientBalance(payerWallet.balance, dto.value);
@@ -57,7 +57,7 @@ export class CreateTransferUseCase {
       await walletRepository.save(payerWallet);
       await walletRepository.save(payeeWallet);
 
-      const pending = new Transfer(0, payer.id, payee.id, dto.value, TransferStatus.COMPLETED, new Date());
+      const pending = new Transfer('', payer.id, payee.id, dto.value, TransferStatus.COMPLETED, new Date());
       return transferRepository.create(pending);
     });
 
