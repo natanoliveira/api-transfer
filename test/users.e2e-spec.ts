@@ -1,11 +1,13 @@
 import * as request from 'supertest';
-import { createTestApp } from './test-setup';
+import { authHeaders, createTestApp } from './test-setup';
 
 describe('UsersController', () => {
   it('cria usuario com sucesso', async () => {
     const { app } = await createTestApp();
     const response = await request(app.getHttpServer())
       .post('/users')
+      .set(authHeaders())
+      .set(authHeaders())
       .send({
         fullName: 'Maria Silva',
         document: '52998224725',
@@ -30,14 +32,15 @@ describe('UsersController', () => {
     const { app } = await createTestApp();
     const payload = {
       fullName: 'Maria Silva',
-      document: '12345678901',
+      document: '04736744081',
       email: 'maria@exemplo.com',
       password: 'senha-forte-123',
       type: 'COMMON',
     };
 
-    await request(app.getHttpServer()).post('/users').send(payload).expect(201);
+    await request(app.getHttpServer()).post('/users').set(authHeaders()).send(payload).expect(201);
     const response = await request(app.getHttpServer())
+      .set(authHeaders())
       .post('/users')
       .send({ ...payload, email: 'outra@exemplo.com' })
       .expect(400);

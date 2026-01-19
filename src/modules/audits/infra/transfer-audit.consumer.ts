@@ -9,15 +9,18 @@ export class TransferAuditConsumer implements OnModuleInit {
   constructor(
     private readonly rabbitMq: RabbitMqClient,
     private readonly auditService: TransferAuditService,
-  ) {}
+  ) { }
 
   async onModuleInit() {
     if (process.env.RABBITMQ_ENABLED !== 'true') {
+      this.logger.warn('RabbitMQ desabilitado; consumer de auditoria nao iniciado.');
       return;
     }
+    this.logger.log('Iniciando consumer de auditoria...');
     await this.rabbitMq.consume('transfer.audit', 'transfer.events', 'transfer.*', async (payload) => {
+      this.logger.log(`Mensagem recebida para auditoria: ${payload.transferId ?? 'desconhecida'}.`);
       await this.auditService.recordTransferEvent(payload);
-      this.logger.log(`Auditoria registrada para transferencia ${payload.transferId ?? 'desconhecida'}.`);
+      this.logger.log(`Auditoria registrada para transferência ${payload.transferId ?? 'desconhecida'}.`);
     });
   }
 }

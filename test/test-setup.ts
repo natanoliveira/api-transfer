@@ -7,7 +7,7 @@ import { InMemoryUserRepository } from '../src/modules/users/infra/user.reposito
 import { InMemoryWalletRepository } from '../src/modules/wallets/infra/wallet.repository.memory';
 import { InMemoryTransferRepository } from '../src/modules/transfers/infra/transfer.repository.memory';
 
-class MockPrismaService {}
+class MockPrismaService { }
 
 export async function createTestApp(): Promise<{
   app: INestApplication;
@@ -16,6 +16,7 @@ export async function createTestApp(): Promise<{
   transferRepository: InMemoryTransferRepository;
 }> {
   process.env.RABBITMQ_ENABLED = 'false';
+  process.env.APP_TOKEN = 'test-token';
 
   const userRepository = new InMemoryUserRepository();
   const walletRepository = new InMemoryWalletRepository();
@@ -38,7 +39,7 @@ export async function createTestApp(): Promise<{
     .overrideProvider('AuthorizerService')
     .useValue({ authorize: async () => true })
     .overrideProvider('NotificationService')
-    .useValue({ notifyTransfer: async () => undefined })
+    .useValue({ notifyTransfer: async () => ({ status: 'success' }) })
     .overrideProvider(PrismaService)
     .useValue(new MockPrismaService())
     .compile();
@@ -48,4 +49,8 @@ export async function createTestApp(): Promise<{
   await app.init();
 
   return { app, userRepository, walletRepository, transferRepository };
+}
+
+export function authHeaders(): Record<string, string> {
+  return { 'x-app-token': process.env.APP_TOKEN ?? '' };
 }

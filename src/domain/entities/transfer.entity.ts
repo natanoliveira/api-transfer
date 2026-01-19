@@ -7,6 +7,8 @@ export class Transfer {
     public readonly payeeId: string,
     public readonly value: number,
     public readonly status: TransferStatus,
+    public readonly sentEmail: boolean,
+    public readonly sentSms: boolean,
     public readonly createdAt: Date,
   ) {}
 }

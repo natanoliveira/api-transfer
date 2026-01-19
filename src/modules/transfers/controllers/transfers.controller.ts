@@ -17,7 +17,7 @@ import { ListTransfersUseCase } from '../services/list-transfers.usecase';
 import { TransferPresenter } from '../services/transfer-presenter';
 
 @ApiTags('transfers')
-@Controller('transfer')
+@Controller('transfers')
 export class TransfersController {
   constructor(
     private readonly createTransferUseCase: CreateTransferUseCase,
@@ -25,7 +25,7 @@ export class TransfersController {
   ) { }
 
   @Post()
-  @ApiOperation({ summary: 'Criar transferencia' })
+  @ApiOperation({ summary: 'Criar transferência' })
   @ApiBody({ type: CreateTransferDto })
   @ApiCreatedResponse({ description: 'Transferência criada com sucesso.', type: TransferResponseDto })
   @ApiBadRequestResponse({ description: 'Dados inválidos ou saldo insuficiente.' })

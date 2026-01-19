@@ -2,27 +2,29 @@ import { Inject, Injectable } from '@nestjs/common';
 import { DomainError } from '../../../domain/errors/domain-error';
 import { CacheService } from '../../../infra/cache/cache.service';
 import { WalletRepository } from '../repositories/wallet.repository.interface';
+import { WalletTransactionType } from '../../../domain/enums/wallet-type.enum';
+
 
 @Injectable()
-export class GetBalanceUseCase {
+export class CreateWalletTransactionUseCase {
   constructor(
     @Inject('WalletRepository') private readonly walletRepository: WalletRepository,
     @Inject('CacheService') private readonly cacheService: CacheService,
   ) { }
 
-  async execute(userId: string): Promise<number> {
-    const cacheKey = `wallet:balance:${userId}`;
-    const cached = await this.cacheService.get<number>(cacheKey);
-    if (cached !== null) {
-      return cached;
+  async execute(userId: string, type: WalletTransactionType, value: number): Promise<number> {
+    if (type !== WalletTransactionType.DEPOSIT) {
+      throw new DomainError('Tipo de transacao nao suportado.', 400);
     }
 
     const wallet = await this.walletRepository.findByUserId(userId);
     if (!wallet) {
       throw new DomainError('Carteira nao encontrada.', 404);
     }
-    const ttlSeconds = Number(process.env.CACHE_TTL_SECONDS ?? 30);
-    await this.cacheService.set(cacheKey, wallet.balance, Number.isNaN(ttlSeconds) ? 30 : ttlSeconds);
-    return wallet.balance;
+
+    wallet.balance += value;
+    const saved = await this.walletRepository.save(wallet);
+    await this.cacheService.del(`wallet:balance:${userId}`);
+    return saved.balance;
   }
 }

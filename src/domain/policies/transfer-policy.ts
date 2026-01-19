@@ -14,7 +14,7 @@ export class TransferPolicy {
 
   static ensurePayerIsCommon(payer: User) {
     if (payer.type === UserType.MERCHANT) {
-      throw new DomainError('Usuarios lojistas não podem enviar transferencias.');
+      throw new DomainError('Usuários lojistas não podem enviar transferências.');
     }
   }
 

@@ -14,6 +14,8 @@ export class InMemoryTransferRepository implements TransferRepository {
       transfer.payeeId,
       transfer.value,
       transfer.status,
+      transfer.sentEmail,
+      transfer.sentSms,
       transfer.createdAt,
     );
     this.transfers.push(created);
@@ -25,5 +27,23 @@ export class InMemoryTransferRepository implements TransferRepository {
     const total = items.length;
     const start = (params.page - 1) * params.limit;
     return { items: items.slice(start, start + params.limit), total };
+  }
+
+  async updateNotificationStatus(id: string, status: { sentEmail: boolean; sentSms: boolean }): Promise<void> {
+    const index = this.transfers.findIndex((transfer) => transfer.id === id);
+    if (index === -1) {
+      return;
+    }
+    const current = this.transfers[index];
+    this.transfers[index] = new Transfer(
+      current.id,
+      current.payerId,
+      current.payeeId,
+      current.value,
+      current.status,
+      status.sentEmail,
+      status.sentSms,
+      current.createdAt,
+    );
   }
 }

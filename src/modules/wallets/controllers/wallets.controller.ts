@@ -1,7 +1,9 @@
-import { Controller, Get, Param, Query } from '@nestjs/common';
-import { ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
+import { ApiBadRequestResponse, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { BalanceResponseDto } from '../dto/balance-response.dto';
+import { WalletTransactionDto } from '../dto/wallet-transaction.dto';
 import { WalletListResponseDto } from '../dto/wallet-list-response.dto';
+import { CreateWalletTransactionUseCase } from '../services/create-wallet-transaction.usecase';
 import { GetBalanceUseCase } from '../services/get-balance.usecase';
 import { ListWalletsUseCase } from '../services/list-wallets.usecase';
 import { WalletPresenter } from '../services/wallet-presenter';
@@ -12,6 +14,7 @@ export class WalletsController {
   constructor(
     private readonly getBalanceUseCase: GetBalanceUseCase,
     private readonly listWalletsUseCase: ListWalletsUseCase,
+    private readonly createWalletTransactionUseCase: CreateWalletTransactionUseCase,
   ) { }
 
   @Get(':userId/balance')
@@ -46,5 +49,19 @@ export class WalletsController {
       page: currentPage,
       limit: currentLimit,
     };
+  }
+
+  @Post(':userId/transactions')
+  @ApiOperation({ summary: 'Criar transação na carteira (depósito)' })
+  @ApiParam({ name: 'userId', example: '8a7f0f7f-4d1c-4d62-8f24-3f4f0e9f7b0f' })
+  @ApiOkResponse({ description: 'Transacao registrada com sucesso.', type: BalanceResponseDto })
+  @ApiBadRequestResponse({ description: 'Dados invalidos.' })
+  @ApiNotFoundResponse({ description: 'Carteira nao encontrada.' })
+  async createTransaction(
+    @Param('userId') userId: string,
+    @Body() dto: WalletTransactionDto,
+  ): Promise<BalanceResponseDto> {
+    const balance = await this.createWalletTransactionUseCase.execute(userId, dto.type, dto.value);
+    return WalletPresenter.toBalanceResponse(balance);
   }
 }

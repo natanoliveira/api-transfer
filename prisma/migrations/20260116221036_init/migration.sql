@@ -39,6 +39,8 @@ CREATE TABLE "Transfer" (
     "payeeId" UUID NOT NULL,
     "value" DECIMAL(65,30) NOT NULL,
     "status" "TransferStatus" NOT NULL,
+    "sentEmail" BOOLEAN NOT NULL DEFAULT false,
+    "sentSms" BOOLEAN NOT NULL DEFAULT false,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "Transfer_pkey" PRIMARY KEY ("id")

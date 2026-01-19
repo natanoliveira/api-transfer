@@ -17,6 +17,12 @@ export class TransferResponseDto {
   @ApiProperty({ enum: TransferStatus, example: TransferStatus.COMPLETED })
   status!: TransferStatus;
 
+  @ApiProperty({ example: false })
+  sentEmail!: boolean;
+
+  @ApiProperty({ example: false })
+  sentSms!: boolean;
+
   @ApiProperty({ example: '2026-01-16T19:10:00.000Z' })
   createdAt!: string;
 }

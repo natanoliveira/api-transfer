@@ -1,9 +1,10 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { Transfer } from '../../../domain/entities/transfer.entity';
 import { DomainError } from '../../../domain/errors/domain-error';
 import { TransferStatus } from '../../../domain/enums/transfer-status.enum';
 import { TransferPolicy } from '../../../domain/policies/transfer-policy';
 import { UserRepository } from '../../users/repositories/user.repository.interface';
+import { TransferRepository } from '../repositories/transfer.repository.interface';
 import { AuthorizerService } from '../../authz/services/authorizer.service';
 import { NotificationService } from '../../notifications/services/notification.service';
 import { CreateTransferDto } from '../dto/create-transfer.dto';
@@ -12,8 +13,11 @@ import { TransactionManager } from './transaction-manager.interface';
 
 @Injectable()
 export class CreateTransferUseCase {
+  private readonly logger = new Logger(CreateTransferUseCase.name);
+
   constructor(
     @Inject('UserRepository') private readonly userRepository: UserRepository,
+    @Inject('TransferRepository') private readonly transferRepository: TransferRepository,
     @Inject('AuthorizerService') private readonly authorizerService: AuthorizerService,
     @Inject('NotificationService') private readonly notificationService: NotificationService,
     @Inject('TransactionManager') private readonly transactionManager: TransactionManager,
@@ -25,18 +29,18 @@ export class CreateTransferUseCase {
 
     const payer = await this.userRepository.findById(dto.payer);
     if (!payer) {
-      throw new DomainError('Pagador não encontrado.', 404);
+      throw new DomainError('Pagador nao encontrado.', 404);
     }
     const payee = await this.userRepository.findById(dto.payee);
     if (!payee) {
-      throw new DomainError('Recebedor não encontrado.', 404);
+      throw new DomainError('Recebedor nao encontrado.', 404);
     }
 
     TransferPolicy.ensurePayerIsCommon(payer);
 
     const authorized = await this.authorizerService.authorize(payer.id, payee.id, dto.value);
     if (!authorized) {
-      throw new DomainError('Transferencia não autorizada.', 403);
+      throw new DomainError('Transferencia nao autorizada.', 403);
     }
 
     const transfer = await this.transactionManager.runInTransaction(async ({ walletRepository, transferRepository }) => {
@@ -46,7 +50,7 @@ export class CreateTransferUseCase {
       const payeeWallet = await walletRepository.findByUserId(payee.id);
 
       if (!payerWallet || !payeeWallet) {
-        throw new DomainError('Carteira não encontrada.', 404);
+        throw new DomainError('Carteira nao encontrada.', 404);
       }
 
       TransferPolicy.ensureSufficientBalance(payerWallet.balance, dto.value);
@@ -57,11 +61,25 @@ export class CreateTransferUseCase {
       await walletRepository.save(payerWallet);
       await walletRepository.save(payeeWallet);
 
-      const pending = new Transfer('', payer.id, payee.id, dto.value, TransferStatus.COMPLETED, new Date());
+      const pending = new Transfer('', payer.id, payee.id, dto.value, TransferStatus.COMPLETED, false, false, new Date());
       return transferRepository.create(pending);
     });
 
-    this.notificationService.notifyTransfer(transfer).catch(() => undefined);
+    this.logger.log(`Transferencia ${transfer.id} concluida com sucesso.`);
+
+    void (async () => {
+      try {
+        const notification = await this.notificationService.notifyTransfer(transfer, payee.email);
+        if (notification.status === 'fail') {
+          this.logger.error(`Nao foi possivel enviar email e sms da transferencia ${transfer.id}.`);
+        }
+      } catch (error) {
+        const err = error as Error;
+        this.logger.error(`Nao foi possivel enviar email e sms da transferencia ${transfer.id}: ${err.message}`);
+      } finally {
+        await this.transferRepository.updateNotificationStatus(transfer.id, { sentEmail: false, sentSms: false });
+      }
+    })();
     await this.cacheService.del(`wallet:balance:${payer.id}`);
     await this.cacheService.del(`wallet:balance:${payee.id}`);
 

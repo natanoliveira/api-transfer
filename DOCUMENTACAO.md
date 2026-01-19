@@ -29,6 +29,9 @@ Copie `.env.example` para `.env` e ajuste os valores.
 Variaveis principais:
 - `PORT`: porta HTTP da aplicação.
 - `APP_TOKEN`: token de aplicação para acesso via header `x-app-token`.
+- `PASSWORD_PEPPER`: segredo adicional para hash de senha (manter fora do repositorio).
+- `AUTHZ_URL`: endpoint do autorizador externo (GET).
+- `NOTIFY_URL`: endpoint do servico de notificacao (POST).
 - `POSTGRES_USER`: usuário do PostgreSQL.
 - `POSTGRES_PASSWORD`: senha do PostgreSQL.
 - `POSTGRES_DB`: nome do banco.
@@ -50,15 +53,19 @@ As chaves primarias sao UUID por padrao.
 - `POST /users`
 - `GET /users?page=1&limit=10`
 - `GET /wallets/:userId/balance`
+- `POST /wallets/:userId/transactions`
 - `GET /wallets?page=1&limit=10`
-- `POST /transfer`
-- `GET /transfer?page=1&limit=10`
+- `POST /transfers`
+- `GET /transfers?page=1&limit=10`
 
 Exemplo de `.env` atual:
 ```
 # Application
 PORT=4001
 APP_TOKEN=5f9be413f841f1b812f86c949b62a93aff08b73f7331f073819d1b809494b905
+PASSWORD_PEPPER=4fb9747f74345c532c0efd09913e621fc45ec34a1c2cafe4fb1d854b2f37ca19
+AUTHZ_URL=http://localhost:8081/authorize
+NOTIFY_URL=https://util.devi.tools/api/v1/notify
 
 # Database
 POSTGRES_USER=api_transfer

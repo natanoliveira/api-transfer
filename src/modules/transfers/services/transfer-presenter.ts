@@ -9,6 +9,8 @@ export class TransferPresenter {
       payeeId: transfer.payeeId,
       value: transfer.value,
       status: transfer.status,
+      sentEmail: transfer.sentEmail,
+      sentSms: transfer.sentSms,
       createdAt: transfer.createdAt.toISOString(),
     };
   }

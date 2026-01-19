@@ -17,7 +17,8 @@ Backend basico para uma plataforma de transferencias entre usuarios comuns e loj
 
 - POST /users
 - GET /wallets/:userId/balance
-- POST /transfer
+- POST /wallets/:userId/transactions
+- POST /transfers
 
 ## Stack
 

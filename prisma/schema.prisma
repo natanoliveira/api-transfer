@@ -47,6 +47,8 @@ model Transfer {
   payeeId   String
   value     Decimal
   status    TransferStatus
+  sentEmail Boolean         @default(false)
+  sentSms   Boolean         @default(false)
   payer     User            @relation("TransferPayer", fields: [payerId], references: [id])
   payee     User            @relation("TransferPayee", fields: [payeeId], references: [id])
   audits    TransferAudit[]

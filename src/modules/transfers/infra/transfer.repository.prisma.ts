@@ -16,6 +16,8 @@ export class PrismaTransferRepository implements TransferRepository {
         payeeId: transfer.payeeId,
         value: transfer.value,
         status: transfer.status,
+        sentEmail: transfer.sentEmail,
+        sentSms: transfer.sentSms,
       },
     });
     return this.toDomain(created);
@@ -29,6 +31,16 @@ export class PrismaTransferRepository implements TransferRepository {
     return { items: items.map((transfer) => this.toDomain(transfer)), total };
   }
 
+  async updateNotificationStatus(id: string, status: { sentEmail: boolean; sentSms: boolean }): Promise<void> {
+    await this.prisma.transfer.update({
+      where: { id },
+      data: {
+        sentEmail: status.sentEmail,
+        sentSms: status.sentSms,
+      },
+    });
+  }
+
   private toDomain(transfer: PrismaTransfer): Transfer {
     return new Transfer(
       transfer.id,
@@ -36,6 +48,8 @@ export class PrismaTransferRepository implements TransferRepository {
       transfer.payeeId,
       Number(transfer.value),
       transfer.status as TransferStatus,
+      transfer.sentEmail,
+      transfer.sentSms,
       transfer.createdAt,
     );
   }

@@ -1,12 +1,13 @@
 import * as request from 'supertest';
 import { Wallet } from '../src/domain/entities/wallet.entity';
-import { createTestApp } from './test-setup';
+import { authHeaders, createTestApp } from './test-setup';
 
 describe('TransfersController', () => {
   it('cria transferencia com sucesso', async () => {
     const { app, walletRepository } = await createTestApp();
     const payerResponse = await request(app.getHttpServer())
       .post('/users')
+      .set(authHeaders())
       .send({
         fullName: 'Ana Lima',
         document: '52998224725',
@@ -17,6 +18,7 @@ describe('TransfersController', () => {
       .expect(201);
     const payeeResponse = await request(app.getHttpServer())
       .post('/users')
+      .set(authHeaders())
       .send({
         fullName: 'Loja XPTO',
         document: '11222333000181',
@@ -29,7 +31,8 @@ describe('TransfersController', () => {
     await walletRepository.save(new Wallet(payerResponse.body.id, 200));
 
     const response = await request(app.getHttpServer())
-      .post('/transfer')
+      .post('/transfers')
+      .set(authHeaders())
       .send({
         value: 50,
         payer: payerResponse.body.id,
@@ -51,6 +54,7 @@ describe('TransfersController', () => {
     const { app } = await createTestApp();
     const payerResponse = await request(app.getHttpServer())
       .post('/users')
+      .set(authHeaders())
       .send({
         fullName: 'Carlos Souza',
         document: '39053344705',
@@ -61,6 +65,7 @@ describe('TransfersController', () => {
       .expect(201);
     const payeeResponse = await request(app.getHttpServer())
       .post('/users')
+      .set(authHeaders())
       .send({
         fullName: 'Paula Martins',
         document: '16899535009',
@@ -71,7 +76,8 @@ describe('TransfersController', () => {
       .expect(201);
 
     const response = await request(app.getHttpServer())
-      .post('/transfer')
+      .post('/transfers')
+      .set(authHeaders())
       .send({
         value: 10,
         payer: payerResponse.body.id,
