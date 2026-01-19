@@ -16,9 +16,15 @@ Backend basico para uma plataforma de transferencias entre usuarios comuns e loj
 ## Endpoints principais
 
 - POST /users
+- GET /users?page=1&limit=10
 - GET /wallets/:userId/balance
+- GET /wallets?page=1&limit=10
 - POST /wallets/:userId/transactions
 - POST /transfers
+- GET /transfers?page=1&limit=10
+- GET /transfers/users/:userId
+- GET /transfers/users/:userId/sent
+- GET /transfers/users/:userId/received
 
 ## Stack
 
