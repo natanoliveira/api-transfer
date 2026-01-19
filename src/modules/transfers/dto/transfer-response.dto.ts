@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { TransferStatus } from '../../../domain/enums/transfer-status.enum';
 
 export class TransferResponseDto {
@@ -8,8 +8,14 @@ export class TransferResponseDto {
   @ApiProperty({ example: 'c3f6a9b2-5f39-4f3c-9e4a-41c3f2a01b72' })
   payerId!: string;
 
+  @ApiPropertyOptional({ example: 'Joao Silva' })
+  payerName?: string;
+
   @ApiProperty({ example: 'f5c58d53-4d4b-4b6f-9ef4-1c346c1f0e2a' })
   payeeId!: string;
+
+  @ApiPropertyOptional({ example: 'Maria Souza' })
+  payeeName?: string;
 
   @ApiProperty({ example: 100.5 })
   value!: number;

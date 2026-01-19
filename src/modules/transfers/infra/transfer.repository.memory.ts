@@ -29,6 +29,45 @@ export class InMemoryTransferRepository implements TransferRepository {
     return { items: items.slice(start, start + params.limit), total };
   }
 
+  async findManyByUserPaged(params: {
+    userId: string;
+    page: number;
+    limit: number;
+  }): Promise<{ items: Transfer[]; total: number }> {
+    const items = this.transfers
+      .filter((transfer) => transfer.payerId === params.userId || transfer.payeeId === params.userId)
+      .sort((a, b) => a.id.localeCompare(b.id));
+    const total = items.length;
+    const start = (params.page - 1) * params.limit;
+    return { items: items.slice(start, start + params.limit), total };
+  }
+
+  async findManyByPayerPaged(params: {
+    userId: string;
+    page: number;
+    limit: number;
+  }): Promise<{ items: Transfer[]; total: number }> {
+    const items = this.transfers
+      .filter((transfer) => transfer.payerId === params.userId)
+      .sort((a, b) => a.id.localeCompare(b.id));
+    const total = items.length;
+    const start = (params.page - 1) * params.limit;
+    return { items: items.slice(start, start + params.limit), total };
+  }
+
+  async findManyByPayeePaged(params: {
+    userId: string;
+    page: number;
+    limit: number;
+  }): Promise<{ items: Transfer[]; total: number }> {
+    const items = this.transfers
+      .filter((transfer) => transfer.payeeId === params.userId)
+      .sort((a, b) => a.id.localeCompare(b.id));
+    const total = items.length;
+    const start = (params.page - 1) * params.limit;
+    return { items: items.slice(start, start + params.limit), total };
+  }
+
   async updateNotificationStatus(id: string, status: { sentEmail: boolean; sentSms: boolean }): Promise<void> {
     const index = this.transfers.findIndex((transfer) => transfer.id === id);
     if (index === -1) {

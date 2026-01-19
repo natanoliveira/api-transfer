@@ -2,6 +2,9 @@ import { Module } from '@nestjs/common';
 import { TransfersController } from './controllers/transfers.controller';
 import { CreateTransferUseCase } from './services/create-transfer.usecase';
 import { ListTransfersUseCase } from './services/list-transfers.usecase';
+import { ListUserTransfersUseCase } from './services/list-user-transfers.usecase';
+import { ListUserReceivedTransfersUseCase } from './services/list-user-received-transfers.usecase';
+import { ListUserSentTransfersUseCase } from './services/list-user-sent-transfers.usecase';
 import { PrismaTransferRepository } from './infra/transfer.repository.prisma';
 import { PrismaTransactionManager } from './infra/transaction.manager.prisma';
 import { UsersModule } from '../users/users.module';
@@ -16,6 +19,9 @@ import { PrismaModule } from '../../infra/database/prisma/prisma.module';
   providers: [
     CreateTransferUseCase,
     ListTransfersUseCase,
+    ListUserTransfersUseCase,
+    ListUserReceivedTransfersUseCase,
+    ListUserSentTransfersUseCase,
     PrismaTransferRepository,
     PrismaTransactionManager,
     { provide: 'TransferRepository', useExisting: PrismaTransferRepository },

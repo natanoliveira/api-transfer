@@ -1,0 +1,329 @@
+type: collection.insomnia.rest/5.0
+schema_version: "5.1"
+name: API_Transfer
+meta:
+  id: wrk_5e470379711549c9baee08e5aafe235a
+  created: 1761310842354
+  modified: 1768565667780
+  description: ""
+collection:
+  - name: API Transfer
+    meta:
+      id: fld_4b452771c5e44c1b8bb57261537e021e
+      created: 1768761574457
+      modified: 1768761574457
+      sortKey: -1768761574457
+      description: ""
+    children:
+      - url: "{{ _.base_url }}/docs"
+        name: Documentation
+        meta:
+          id: req_3fa71358c88b45e39dab7b6ae4c55402
+          created: 1768763318463
+          modified: 1768764059874
+          isPrivate: false
+          description: ""
+          sortKey: -1768763318463
+        method: GET
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_url }}/users"
+        name: Create User COMMOM
+        meta:
+          id: req_90d38ee50db3446fac4621b9cf511f90
+          created: 1768764055558
+          modified: 1768783377430
+          isPrivate: false
+          description: ""
+          sortKey: -1768666988425
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "fullName": "Simão Pedro de Sousa",
+              "document": "18624300045",
+              "email": "simaopedro@gmail.com",
+              "password": "senha123",
+              "type": "COMMON"
+            }
+        headers:
+          - name: "{{ _.header_token }}"
+            value: "{{ _.app_token }}"
+            description: ""
+            disabled: false
+          - name: Content-Type
+            value: application/json
+            description: ""
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_url }}/users"
+        name: Create User MERCHANT
+        meta:
+          id: req_58246b07b96c4723897d5a5fc2f90445
+          created: 1768769802880
+          modified: 1768783431953
+          isPrivate: false
+          description: ""
+          sortKey: -1768618823406
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+            	"fullName": "Atacadão Betsaida",
+            	"document": "72766220000131",
+            	"email": "contato@atacadaobetsaida.com",
+            	"password": "senha123",
+            	"type": "MERCHANT"
+            }
+        headers:
+          - name: "{{ _.header_token }}"
+            value: "{{ _.app_token }}"
+            description: ""
+            disabled: false
+          - name: Content-Type
+            value: application/json
+            description: ""
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_url }}/transfers"
+        name: Transfer
+        meta:
+          id: req_b773ba1f902d4282b669e5a88cbc02dc
+          created: 1768771435754
+          modified: 1768783154956
+          isPrivate: false
+          description: ""
+          sortKey: -1768618823306
+        method: POST
+        body:
+          mimeType: application/json
+          text: |
+            {
+              "value": 98.88,
+              "payer": "fe5f06df-ce1b-4a95-bf29-df3852ed71b4",
+              "payee": "2d0d2e61-9ace-4839-b03a-0ebdbe713862"
+            }
+        headers:
+          - name: "{{ _.header_token }}"
+            value: "{{ _.app_token }}"
+            description: ""
+            disabled: false
+          - name: Content-Type
+            value: application/json
+            description: ""
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_url
+          }}/wallets/378e1b6d-4732-4de6-a17e-146fbe01044c/transactions"
+        name: Wallet user transactions (depósito)
+        meta:
+          id: req_b1cc5960fd1c439d88770a675905d7de
+          created: 1768772903659
+          modified: 1768782798978
+          isPrivate: false
+          description: ""
+          sortKey: -1768618823356
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+            	"type": "deposit",
+            	"value": 50.00
+            }
+        headers:
+          - name: "{{ _.header_token }}"
+            value: "{{ _.app_token }}"
+            description: ""
+            disabled: false
+          - name: Content-Type
+            value: application/json
+            description: ""
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_url }}/wallets/2d0d2e61-9ace-4839-b03a-0ebdbe713862/balance"
+        name: Wallet user MERCHANT
+        meta:
+          id: req_e0231f965378437e8d9d5727549289eb
+          created: 1768774426442
+          modified: 1768774601297
+          isPrivate: false
+          description: ""
+          sortKey: -1768618823206
+        method: GET
+        headers:
+          - name: "{{ _.header_token }}"
+            value: "{{ _.app_token }}"
+            description: ""
+            disabled: false
+          - name: User-Agent
+            value: insomnia/12.3.0
+            description: ""
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_url }}/wallets/fe5f06df-ce1b-4a95-bf29-df3852ed71b4/balance"
+        name: Wallet user COMMOM
+        meta:
+          id: req_ec89453ff12644ba8414dad246036d92
+          created: 1768774610318
+          modified: 1768774625613
+          isPrivate: false
+          description: ""
+          sortKey: -1768618823256
+        method: GET
+        headers:
+          - name: "{{ _.header_token }}"
+            value: "{{ _.app_token }}"
+            description: ""
+            disabled: false
+          - name: User-Agent
+            value: insomnia/12.3.0
+            description: ""
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_url
+          }}/transfers/users/fe5f06df-ce1b-4a95-bf29-df3852ed71b4/sent"
+        name: Transfer user sent (pagador)
+        meta:
+          id: req_126c41d719714808aa55505c7a32988c
+          created: 1768782245153
+          modified: 1768783087778
+          isPrivate: false
+          description: ""
+          sortKey: -1768594740796.5
+        method: GET
+        parameters:
+          - name: page
+            value: "1"
+          - name: limit
+            value: "50"
+        headers:
+          - name: "{{ _.header_token }}"
+            value: "{{ _.app_token }}"
+            description: ""
+            disabled: false
+          - name: User-Agent
+            value: insomnia/12.3.0
+            description: ""
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.base_url
+          }}/transfers/users/2d0d2e61-9ace-4839-b03a-0ebdbe713862/received"
+        name: Transfer user received (recebedor)
+        meta:
+          id: req_286c2ab1f7124c648b7bdf452f33299f
+          created: 1768782264125
+          modified: 1768783080370
+          isPrivate: false
+          description: ""
+          sortKey: -1768582699591.75
+        method: GET
+        parameters:
+          - name: page
+            value: "1"
+          - name: limit
+            value: "50"
+        headers:
+          - name: "{{ _.header_token }}"
+            value: "{{ _.app_token }}"
+            description: ""
+            disabled: false
+          - name: User-Agent
+            value: insomnia/12.3.0
+            description: ""
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+cookieJar:
+  name: Default Jar
+  meta:
+    id: jar_a34bac0457489c999973a048aa1f9326d8d5933b
+    created: 1761310842357
+    modified: 1761310842357
+environments:
+  name: Base Environment
+  meta:
+    id: env_a34bac0457489c999973a048aa1f9326d8d5933b
+    created: 1761310842355
+    modified: 1768480348067
+    isPrivate: false
+  data:
+    baseURL: ""
+    token: ""
+    base_url: ""
+    token_api: ""
+  subEnvironments:
+    - name: api-transfer
+      meta:
+        id: env_466eeaf4087642d991f145a99c9fd86b
+        created: 1768763327279
+        modified: 1768774475222
+        isPrivate: true
+        sortKey: 1768763327279
+      data:
+        base_url: http://localhost:4001
+        header_token: x-app-token
+        app_token: 5f9be413f841f1b812f86c949b62a93aff08b73f7331f073819d1b809494b905

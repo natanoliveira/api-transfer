@@ -11,6 +11,17 @@ export class InMemoryUserRepository implements UserRepository {
     return this.users.get(id) ?? null;
   }
 
+  async findManyByIds(ids: string[]): Promise<User[]> {
+    const result: User[] = [];
+    for (const id of ids) {
+      const user = this.users.get(id);
+      if (user) {
+        result.push(user);
+      }
+    }
+    return result;
+  }
+
   async existsByDocument(document: string): Promise<boolean> {
     for (const user of this.users.values()) {
       if (user.document === document) {

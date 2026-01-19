@@ -7,8 +7,9 @@ Este projeto implementa uma API REST para transferências entre usuários comuns
 - Criacao de usuários com validacao de dados.
 - Consulta de saldo por usuário.
 - Listagem paginada de usuários, carteiras e transferências.
+- Extrato de transferências enviadas e recebidas com nome do pagador/recebedor.
 - Criacao de transferências com regras de negocio (saldo, perfil e autorizacao).
-- Notificação pos-transferência via mensageria (RabbitMQ), com auditoria persistida.
+- Notificação pos-transferência via HTTP (mock externo), com auditoria persistida via RabbitMQ.
 - Cache de saldo com TTL configurável.
 - Documentacao Swagger em `/docs`.
 
@@ -17,6 +18,7 @@ Este projeto implementa uma API REST para transferências entre usuários comuns
 - Aplicação: casos de uso em `src/modules/**/services`.
 - Infraestrutura: repositorios Prisma, cache, mensageria e tratamento HTTP em `src/infra` e `src/modules/**/infra`.
 - Entrega: controllers REST em `src/modules/**/controllers`.
+- Coleção de endpoints: pasta `collection` com arquivo exportado contendo as rotas da API.
 
 ## Requisitos
 - Node.js 20+
@@ -57,6 +59,9 @@ As chaves primarias sao UUID por padrao.
 - `GET /wallets?page=1&limit=10`
 - `POST /transfers`
 - `GET /transfers?page=1&limit=10`
+- `GET /transfers/users/:userId`
+- `GET /transfers/users/:userId/sent`
+- `GET /transfers/users/:userId/received`
 
 Exemplo de `.env` atual:
 ```

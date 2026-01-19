@@ -31,6 +31,47 @@ export class PrismaTransferRepository implements TransferRepository {
     return { items: items.map((transfer) => this.toDomain(transfer)), total };
   }
 
+  async findManyByUserPaged(params: {
+    userId: string;
+    page: number;
+    limit: number;
+  }): Promise<{ items: Transfer[]; total: number }> {
+    const skip = (params.page - 1) * params.limit;
+    const take = params.limit;
+    const where = {
+      OR: [{ payerId: params.userId }, { payeeId: params.userId }],
+    };
+    const items = await this.prisma.transfer.findMany({ skip, take, where, orderBy: { id: 'asc' } });
+    const total = await this.prisma.transfer.count({ where });
+    return { items: items.map((transfer) => this.toDomain(transfer)), total };
+  }
+
+  async findManyByPayerPaged(params: {
+    userId: string;
+    page: number;
+    limit: number;
+  }): Promise<{ items: Transfer[]; total: number }> {
+    const skip = (params.page - 1) * params.limit;
+    const take = params.limit;
+    const where = { payerId: params.userId };
+    const items = await this.prisma.transfer.findMany({ skip, take, where, orderBy: { id: 'asc' } });
+    const total = await this.prisma.transfer.count({ where });
+    return { items: items.map((transfer) => this.toDomain(transfer)), total };
+  }
+
+  async findManyByPayeePaged(params: {
+    userId: string;
+    page: number;
+    limit: number;
+  }): Promise<{ items: Transfer[]; total: number }> {
+    const skip = (params.page - 1) * params.limit;
+    const take = params.limit;
+    const where = { payeeId: params.userId };
+    const items = await this.prisma.transfer.findMany({ skip, take, where, orderBy: { id: 'asc' } });
+    const total = await this.prisma.transfer.count({ where });
+    return { items: items.map((transfer) => this.toDomain(transfer)), total };
+  }
+
   async updateNotificationStatus(id: string, status: { sentEmail: boolean; sentSms: boolean }): Promise<void> {
     await this.prisma.transfer.update({
       where: { id },

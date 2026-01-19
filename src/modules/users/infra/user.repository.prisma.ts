@@ -14,6 +14,14 @@ export class PrismaUserRepository implements UserRepository {
     return user ? this.toDomain(user) : null;
   }
 
+  async findManyByIds(ids: string[]): Promise<User[]> {
+    if (ids.length === 0) {
+      return [];
+    }
+    const users = await this.prisma.user.findMany({ where: { id: { in: ids } } });
+    return users.map((user) => this.toDomain(user));
+  }
+
   async existsByDocument(document: string): Promise<boolean> {
     const count = await this.prisma.user.count({ where: { document } });
     return count > 0;
